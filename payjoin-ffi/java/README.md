@@ -33,6 +33,11 @@ bash ./scripts/generate_bindings.sh
 
 Or `bash ./contrib/test.sh` from this directory (uses `Cargo-recent.lock`).
 
+`./gradlew test` includes a v2↔v2 integration test that starts a local payjoin
+directory, OHTTP relay, and bitcoind. Bitcoin Core is downloaded by corepc-node
+(`29_0`) on first run; it is not supplied by nix. Network access is required
+the first time bitcoind is fetched.
+
 Without nix: Rust, JDK 22+, the bindgen binary above, and the Gradle wrapper in this directory.
 
 ## Stability
