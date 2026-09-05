@@ -38,10 +38,12 @@ mkdir -p "$OUT_DIR"
 rm -rf "$OUT_DIR/org" "$OUT_DIR/uniffi"
 
 if ! command -v uniffi-bindgen-java >/dev/null; then
-    echo "uniffi-bindgen-java not found. Install the 0.4.2 error-template backport:" >&2
-    echo '  cargo install uniffi-bindgen-java \' >&2
-    echo '    --git https://github.com/ram0verflow/uniffi-bindgen-java \' >&2
-    echo "    --branch backport-0.4.2-error-templates" >&2
+    cat >&2 <<'EOF'
+uniffi-bindgen-java not found. Install the 0.4.2 error-template backport:
+  cargo install uniffi-bindgen-java \
+    --git https://github.com/ram0verflow/uniffi-bindgen-java \
+    --branch backport-0.4.2-error-templates
+EOF
     exit 1
 fi
 
