@@ -53,7 +53,7 @@ class CancelTests {
         PjUri uri = receiver.pjUri();
         InMemorySenderPersister senderPersister = new InMemorySenderPersister();
         WithReplyKey withReplyKey =
-                new SenderBuilder(Payjoin.originalPsbt(), uri).buildRecommended(1000).save(senderPersister);
+                new SenderBuilder(TestUtils.originalPsbt(), uri).buildRecommended(1000).save(senderPersister);
         SenderPendingFallback pendingFallback = withReplyKey.cancel().save(senderPersister);
         assertNotNull(pendingFallback);
         assertTrue(pendingFallback.fallbackTx().length > 0);
@@ -77,7 +77,7 @@ class CancelTests {
                 .get();
         PjUri uri = receiver.pjUri();
         InMemorySenderPersisterAsync senderPersister = new InMemorySenderPersisterAsync();
-        WithReplyKey withReplyKey = new SenderBuilder(Payjoin.originalPsbt(), uri)
+        WithReplyKey withReplyKey = new SenderBuilder(TestUtils.originalPsbt(), uri)
                 .buildRecommended(1000)
                 .saveAsync(senderPersister)
                 .get();

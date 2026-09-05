@@ -30,7 +30,7 @@ class PersistenceTests {
                 .save(receiverPersister);
         PjUri uri = receiver.pjUri();
         InMemorySenderPersister senderPersister = new InMemorySenderPersister();
-        new SenderBuilder(Payjoin.originalPsbt(), uri).buildRecommended(1000).save(senderPersister);
+        new SenderBuilder(TestUtils.originalPsbt(), uri).buildRecommended(1000).save(senderPersister);
         try (SenderReplayResult result = Payjoin.replaySenderEventLog(senderPersister)) {
             assertInstanceOf(SendSession.WithReplyKey.class, result.state());
         }
@@ -60,7 +60,7 @@ class PersistenceTests {
                 .get();
         PjUri uri = receiver.pjUri();
         InMemorySenderPersisterAsync senderPersister = new InMemorySenderPersisterAsync();
-        new SenderBuilder(Payjoin.originalPsbt(), uri)
+        new SenderBuilder(TestUtils.originalPsbt(), uri)
                 .buildRecommended(1000)
                 .saveAsync(senderPersister)
                 .get();

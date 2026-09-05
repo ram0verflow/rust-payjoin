@@ -27,7 +27,7 @@ class UriTests {
 
     @Test
     void validUrisWithDifferentAddressesAndEndpoints() {
-        String https = Payjoin.exampleUrl();
+        String https = TestUtils.exampleUrl();
         String onion = "http://vjdpwgybvubne5hda6v4c5iaeeevhge6jvo3w2cl6eocbwwvwxp7b7qd.onion";
         String[] addresses = {
             "bitcoin:12c6DSiU4Rq3P4ZxziKxzrL5LmMBrzjrJX",

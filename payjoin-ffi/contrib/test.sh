@@ -27,5 +27,21 @@ for pid in "${pids[@]}"; do
     rm -f "${tmpfiles[$i]}"
     i=$((i + 1))
 done
+
+# Java generate wipes the same Kotlin tree as kotlin/contrib/test.sh.
+# Run it after the parallel bindings so the two do not race.
+if [ -d java ]; then
+    tmpfile=$(mktemp)
+    if ! (cd java && ./contrib/test.sh) >"$tmpfile" 2>&1; then
+        failed=1
+        echo ""
+        echo "==> FAILED: java"
+        echo "--- output ---"
+        cat "$tmpfile"
+        echo "--------------"
+    fi
+    rm -f "$tmpfile"
+fi
+
 set -e
 exit $failed

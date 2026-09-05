@@ -18,13 +18,13 @@ class ReceiverBuilder internal constructor(internal val inner: FfiReceiverBuilde
     fun build(): InitialReceiveTransition = InitialReceiveTransition(inner.build())
 
     fun withAmount(amountSats: Long): ReceiverBuilder =
-        ReceiverBuilder(inner.withAmount(amountSats.toULong()))
+        ReceiverBuilder(inner.withAmount(u64("amountSats", amountSats)))
 
     fun withExpiration(expirationSecs: Long): ReceiverBuilder =
-        ReceiverBuilder(inner.withExpiration(expirationSecs.toULong()))
+        ReceiverBuilder(inner.withExpiration(u64("expirationSecs", expirationSecs)))
 
     fun withMaxFeeRate(maxEffectiveFeeRateSatPerVb: Long): ReceiverBuilder =
-        ReceiverBuilder(inner.withMaxFeeRate(maxEffectiveFeeRateSatPerVb.toULong()))
+        ReceiverBuilder(inner.withMaxFeeRate(u64("maxEffectiveFeeRateSatPerVb", maxEffectiveFeeRateSatPerVb)))
 
     override fun close() {
         inner.close()

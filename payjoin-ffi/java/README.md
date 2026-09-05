@@ -20,7 +20,8 @@ bash ./scripts/generate_bindings.sh
 
 Or `bash ./contrib/test.sh` from this directory (uses `Cargo-recent.lock`).
 
-Generate writes the same Kotlin sources as `kotlin/contrib/test.sh`, so do not run both from `payjoin-ffi/contrib/test.sh` in parallel.
+`payjoin-ffi/contrib/test.sh` runs Java after the other language bindings. Java generate
+rewrites the Kotlin sources, so it must not run in parallel with `kotlin/`.
 
 ## Stability
 

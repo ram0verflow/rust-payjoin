@@ -34,3 +34,30 @@ jobs:
       - name: Generate and test
         working-directory: payjoin-ffi/java
         run: bash ./contrib/test.sh
+
+  compile-java-without-test-utils:
+    name: "Compile java without _test-utils"
+    runs-on: ubuntu-26.04
+    env:
+      RUSTUP_TOOLCHAIN: 1.85.0
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: "Install Rust 1.85.0"
+        uses: dtolnay/rust-toolchain@1.85.0
+      - name: "Use cache"
+        uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: msrv-workspace
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+      - name: Generate production bindings and compile
+        working-directory: payjoin-ffi/java
+        env:
+          PAYJOIN_FFI_FEATURES: ""
+        run: |
+          bash ./scripts/generate_bindings.sh
+          ./gradlew --no-daemon :kotlin:compileKotlin :compileKotlin

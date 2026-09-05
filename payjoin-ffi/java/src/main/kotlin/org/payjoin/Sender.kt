@@ -15,22 +15,22 @@ class SenderBuilder internal constructor(internal val inner: FfiSenderBuilder) :
         SenderBuilder(inner.alwaysDisableOutputSubstitution())
 
     fun buildNonIncentivizing(minFeeRateSatPerKwu: Long): InitialSendTransition =
-        InitialSendTransition(inner.buildNonIncentivizing(minFeeRateSatPerKwu.toULong()))
+        InitialSendTransition(inner.buildNonIncentivizing(u64("minFeeRateSatPerKwu", minFeeRateSatPerKwu)))
 
     fun buildRecommended(minFeeRateSatPerKwu: Long): InitialSendTransition =
-        InitialSendTransition(inner.buildRecommended(minFeeRateSatPerKwu.toULong()))
+        InitialSendTransition(inner.buildRecommended(u64("minFeeRateSatPerKwu", minFeeRateSatPerKwu)))
 
     fun buildWithAdditionalFee(
         maxFeeContributionSats: Long,
-        changeIndex: Byte?,
+        changeIndex: Int?,
         minFeeRateSatPerKwu: Long,
         clampFeeContribution: Boolean,
     ): InitialSendTransition =
         InitialSendTransition(
             inner.buildWithAdditionalFee(
-                maxFeeContributionSats.toULong(),
-                changeIndex?.toUByte(),
-                minFeeRateSatPerKwu.toULong(),
+                u64("maxFeeContributionSats", maxFeeContributionSats),
+                changeIndex?.let { u8("changeIndex", it) },
+                u64("minFeeRateSatPerKwu", minFeeRateSatPerKwu),
                 clampFeeContribution,
             ),
         )

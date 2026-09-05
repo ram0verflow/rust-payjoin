@@ -3,9 +3,7 @@ package org.payjoin
 import java.util.concurrent.CompletableFuture
 
 /**
- * Entry points that are free functions in UniFFI Kotlin / `PayjoinMethods` in C#.
- *
- * From Java: `Payjoin.replayReceiverEventLog(persister)`.
+ * UniFFI free functions. From Java: `Payjoin.replayReceiverEventLog(persister)`.
  */
 object Payjoin {
     @JvmStatic
@@ -41,12 +39,5 @@ object Payjoin {
                 SenderReplayResult(org.payjoindevkit.replaySenderEventLogAsync(persister.asUniFfi()))
             }
         }
-
-    /** Test helper from `payjoin-ffi` `_test-utils`. */
-    @JvmStatic
-    fun exampleUrl(): String = org.payjoindevkit.exampleUrl()
-
-    /** Test helper from `payjoin-ffi` `_test-utils`. */
-    @JvmStatic
-    fun originalPsbt(): String = org.payjoindevkit.originalPsbt()
 }
+

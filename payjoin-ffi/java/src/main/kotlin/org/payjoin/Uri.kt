@@ -63,7 +63,7 @@ class PjUri internal constructor(internal val inner: FfiPjUri) : AutoCloseable {
 
     fun pjEndpoint(): String = inner.pjEndpoint()
 
-    fun setAmountSats(amountSats: Long): PjUri = PjUri(inner.setAmountSats(amountSats.toULong()))
+    fun setAmountSats(amountSats: Long): PjUri = PjUri(inner.setAmountSats(u64("amountSats", amountSats)))
 
     override fun close() {
         inner.close()
