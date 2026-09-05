@@ -18,7 +18,9 @@ bash ./scripts/generate_bindings.sh
 
 Or `bash ./contrib/test.sh` from this directory (uses `Cargo-recent.lock`).
 
-Without nix: Rust (see repo `rust-toolchain.toml` / MSRV 1.85), JDK 21+, and the Gradle wrapper in this directory.
+`./gradlew test` includes a v2↔v2 integration test that starts a local payjoin directory, OHTTP relay, and bitcoind. Bitcoin Core is downloaded by corepc-node (`29_0`) on first run; it is not supplied by nix.
+
+Without nix: Rust (see repo `rust-toolchain.toml` / MSRV 1.85), JDK 21+, and the Gradle wrapper in this directory. Network access is required the first time bitcoind is fetched.
 
 ## Stability
 
