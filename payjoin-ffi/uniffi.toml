@@ -16,3 +16,18 @@ package_name = "payjoin"
 namespace = "Payjoin"
 cdylib_name = "payjoin_ffi"
 access_modifier = "public"
+
+[bindings.java]
+package_name = "org.payjoindevkit"
+cdylib_name = "payjoin_ffi"
+
+# Objects implement AutoCloseable.close() to drop the Rust handle. Payjoin
+# also exports protocol close() on these types; Java cannot overload on return
+# type, so rename only the protocol methods.
+[bindings.java.rename]
+"ReceiverPendingFallback.close" = "closeSession"
+"SenderPendingFallback.close" = "closeSession"
+"JsonReceiverSessionPersister.close" = "closeSession"
+"JsonReceiverSessionPersisterAsync.close" = "closeSession"
+"JsonSenderSessionPersister.close" = "closeSession"
+"JsonSenderSessionPersisterAsync.close" = "closeSession"
