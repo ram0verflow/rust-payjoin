@@ -17,6 +17,7 @@ The directories below include instructions for using, building, and publishing t
 | JavaScript | linux, macOS          | [payjoin-ffi/javascript](javascript) | [npm](https://www.npmjs.com/package/payjoin)    |
 | C#         | linux, macOS, windows | [payjoin-ffi/csharp](csharp)         | [nuget](https://www.nuget.org/packages/Payjoin) |
 | Kotlin     | linux, macOS, windows | [payjoin-ffi/kotlin](kotlin)         | (not published)                                 |
+| Java       | linux, macOS, windows | [payjoin-ffi/java](java)             | (not published)                                 |
 
 ## Minimum Supported Rust Version (MSRV)
 

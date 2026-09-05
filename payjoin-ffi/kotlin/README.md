@@ -8,6 +8,8 @@ Requires **JDK 21+**. Native `payjoin_ffi` is loaded via JNA.
 
 Protocol session teardown on pending-fallback and JSON persisters is `closeSession()`. `AutoCloseable.close()` drops the Rust handle (try-with-resources / `.use`). Other language bindings keep `close`.
 
+Java bindings that wrap this package are in [`../java`](../java).
+
 ## Build and test
 
 ```shell
