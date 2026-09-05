@@ -1,0 +1,36 @@
+name: Build and Test Kotlin
+on:
+  pull_request:
+    paths:
+      - payjoin-ffi/**
+      - .github/workflows/kotlin.yml
+  push:
+    tags:
+      - "payjoin-kotlin-[0-9]*"
+
+jobs:
+  build-kotlin-and-test:
+    name: "Build and test kotlin"
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-26.04, macos-latest]
+    env:
+      RUSTUP_TOOLCHAIN: 1.85.0
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: "Install Rust 1.85.0"
+        uses: dtolnay/rust-toolchain@1.85.0
+      - name: "Use cache"
+        uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: msrv-workspace
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+      - name: Generate and test
+        working-directory: payjoin-ffi/kotlin
+        run: bash ./contrib/test.sh
