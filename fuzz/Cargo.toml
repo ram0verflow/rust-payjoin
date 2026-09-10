@@ -54,3 +54,9 @@ name = "uri_deserialize_pjuri_v2"
 path = "fuzz_targets/uri/deserialize_pjuri_v2.rs"
 doc = false
 bench = false
+
+[[bin]]
+name = "roundtrip_v1"
+path = "fuzz_targets/roundtrip/v1.rs"
+doc = false
+bench = false
