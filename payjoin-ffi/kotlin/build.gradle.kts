@@ -1,5 +1,9 @@
 plugins {
-    kotlin("jvm") version "2.1.20"
+    // KGP's Gradle compatibility matrix must cover the wrapper version pinned in
+    // gradle/wrapper/gradle-wrapper.properties (currently 9.1.0). 2.1.20 only tests
+    // against Gradle up to 8.12.1; 2.3.20+ is the first stable KGP line whose matrix
+    // extends to 9.1.0 (tested up to 9.3.0).
+    kotlin("jvm") version "2.3.21"
 }
 
 repositories {
@@ -32,6 +36,7 @@ tasks.test {
         .map { libDir.resolve(it) }
         .firstOrNull { it.exists() }
     if (native != null) {
+        inputs.file(native)
         systemProperty("uniffi.component.payjoin.libraryOverride", native.absolutePath)
     }
     systemProperty("jna.library.path", libDir.absolutePath)
