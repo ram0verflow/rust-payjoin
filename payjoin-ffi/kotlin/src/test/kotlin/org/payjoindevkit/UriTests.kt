@@ -19,7 +19,7 @@ class UriTests {
     @Test
     fun missingAmountShouldBeOk() {
         val uri = "bitcoin:12c6DSiU4Rq3P4ZxziKxzrL5LmMBrzjrJX?pj=https://testnet.demo.btcpayserver.org/BTC/pj"
-        assertNotNull(Url.parse(uri))
+        Uri.parse(uri).use { assertNotNull(it) }
     }
 
     @Test
@@ -33,7 +33,7 @@ class UriTests {
         )
         for (address in addresses) {
             for (pj in listOf(https, onion)) {
-                assertNotNull(Url.parse("$address?amount=1&pj=$pj"))
+                Uri.parse("$address?amount=1&pj=$pj").use { assertNotNull(it) }
             }
         }
     }
