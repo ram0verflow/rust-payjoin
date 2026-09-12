@@ -39,8 +39,13 @@ run_cargo() {
 
 run_cargo build --profile "$PAYJOIN_FFI_PROFILE" -p payjoin-ffi
 
-# Cargo writes here when CARGO_TARGET_DIR is set; otherwise the workspace target/.
-TARGET_ROOT="${CARGO_TARGET_DIR:-../target}"
+# cargo metadata honors CARGO_TARGET_DIR and [build] target-dir. The kotlin
+# nix shell has no python/jq; metadata is one line so sed is enough.
+TARGET_ROOT="$(cargo metadata --format-version 1 --no-deps | sed -n 's/.*"target_directory":"\([^"]*\)".*/\1/p')"
+if [[ -z $TARGET_ROOT ]]; then
+    echo "failed to read target_directory from cargo metadata" >&2
+    exit 1
+fi
 NATIVE_LIB="$TARGET_ROOT/$TARGET_PROFILE_DIR/$LIBNAME"
 
 OUT_DIR="kotlin/src/main/kotlin"
