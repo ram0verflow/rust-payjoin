@@ -397,50 +397,42 @@ private class MempoolAcceptanceCallback(private val connection: RpcClient) : Can
 
 private class IsScriptOwnedCallback(private val connection: RpcClient) : IsScriptOwned {
     override fun callback(script: ByteArray): Boolean {
-        return try {
-            val decoded = Json.parseToJsonElement(
-                rpc(connection, "decodescript", jstr(HexFormat.of().formatHex(script))),
-            ).jsonObject
-            val candidates = mutableListOf<String>()
-            decoded["address"]?.jsonPrimitive?.contentOrNull?.let { candidates.add(it) }
-            decoded["addresses"]?.jsonArray?.forEach { item ->
+        val decoded = Json.parseToJsonElement(
+            rpc(connection, "decodescript", jstr(HexFormat.of().formatHex(script))),
+        ).jsonObject
+        val candidates = mutableListOf<String>()
+        decoded["address"]?.jsonPrimitive?.contentOrNull?.let { candidates.add(it) }
+        decoded["addresses"]?.jsonArray?.forEach { item ->
+            if (item.jsonPrimitive.isString) candidates.add(item.jsonPrimitive.content)
+        }
+        decoded["p2sh"]?.jsonPrimitive?.contentOrNull?.let { candidates.add(it) }
+        decoded["segwit"]?.jsonObject?.let { segwit ->
+            segwit["address"]?.jsonPrimitive?.contentOrNull?.let { candidates.add(it) }
+            segwit["addresses"]?.jsonArray?.forEach { item ->
                 if (item.jsonPrimitive.isString) candidates.add(item.jsonPrimitive.content)
             }
-            decoded["p2sh"]?.jsonPrimitive?.contentOrNull?.let { candidates.add(it) }
-            decoded["segwit"]?.jsonObject?.let { segwit ->
-                segwit["address"]?.jsonPrimitive?.contentOrNull?.let { candidates.add(it) }
-                segwit["addresses"]?.jsonArray?.forEach { item ->
-                    if (item.jsonPrimitive.isString) candidates.add(item.jsonPrimitive.content)
-                }
-            }
-            candidates.any { addr ->
-                Json.parseToJsonElement(rpc(connection, "getaddressinfo", jstr(addr)))
-                    .jsonObject["ismine"]?.jsonPrimitive?.booleanOrNull == true
-            }
-        } catch (_: Exception) {
-            false
+        }
+        return candidates.any { addr ->
+            Json.parseToJsonElement(rpc(connection, "getaddressinfo", jstr(addr)))
+                .jsonObject["ismine"]?.jsonPrimitive?.booleanOrNull == true
         }
     }
 }
 
 private class IsInputOwnedCallback(private val connection: RpcClient) : IsInputOwned {
     override fun callback(outpoint: OutPoint): Boolean {
-        return try {
-            val txOut = Json.parseToJsonElement(
-                rpc(
-                    connection,
-                    "gettxout",
-                    jstr(outpoint.txid),
-                    outpoint.vout.toString(),
-                    "true",
-                ),
-            )
-            if (txOut is JsonNull) return false
-            val scriptHex = txOut.jsonObject.getValue("scriptPubKey").jsonObject.getValue("hex").jsonPrimitive.content
-            IsScriptOwnedCallback(connection).callback(HexFormat.of().parseHex(scriptHex))
-        } catch (_: Exception) {
-            false
-        }
+        val txOut = Json.parseToJsonElement(
+            rpc(
+                connection,
+                "gettxout",
+                jstr(outpoint.txid),
+                outpoint.vout.toString(),
+                "true",
+            ),
+        )
+        if (txOut is JsonNull) return false
+        val scriptHex = txOut.jsonObject.getValue("scriptPubKey").jsonObject.getValue("hex").jsonPrimitive.content
+        return IsScriptOwnedCallback(connection).callback(HexFormat.of().parseHex(scriptHex))
     }
 }
 

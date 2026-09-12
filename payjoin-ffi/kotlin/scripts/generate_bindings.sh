@@ -26,25 +26,35 @@ if [[ $PAYJOIN_FFI_PROFILE == "dev" ]]; then
 else
     TARGET_PROFILE_DIR=$PAYJOIN_FFI_PROFILE
 fi
-FEATURE_ARGS=()
-if [[ -n $PAYJOIN_FFI_FEATURES ]]; then
-    FEATURE_ARGS=(--features "$PAYJOIN_FFI_FEATURES")
-fi
+# Empty FEATURE_ARGS + `set -u` is unbound on macOS bash 3.2. Pass --features only when set.
+run_cargo() {
+    local cmd=$1
+    shift
+    if [[ -n $PAYJOIN_FFI_FEATURES ]]; then
+        cargo "$cmd" --features "$PAYJOIN_FFI_FEATURES" "$@"
+    else
+        cargo "$cmd" "$@"
+    fi
+}
 
-cargo build "${FEATURE_ARGS[@]}" --profile "$PAYJOIN_FFI_PROFILE" -p payjoin-ffi
+run_cargo build --profile "$PAYJOIN_FFI_PROFILE" -p payjoin-ffi
+
+# Cargo writes here when CARGO_TARGET_DIR is set; otherwise the workspace target/.
+TARGET_ROOT="${CARGO_TARGET_DIR:-../target}"
+NATIVE_LIB="$TARGET_ROOT/$TARGET_PROFILE_DIR/$LIBNAME"
 
 OUT_DIR="kotlin/src/main/kotlin"
 mkdir -p "$OUT_DIR"
 rm -rf "$OUT_DIR/org"
 
 # ktlint is optional; --no-format keeps generate working without it.
-cargo run "${FEATURE_ARGS[@]}" --profile dev -p payjoin-ffi --bin uniffi-bindgen -- generate \
-    --library "../target/$TARGET_PROFILE_DIR/$LIBNAME" \
+run_cargo run --profile dev -p payjoin-ffi --bin uniffi-bindgen -- generate \
+    --library "$NATIVE_LIB" \
     --language kotlin \
     --out-dir "$OUT_DIR" \
     --no-format
 
 mkdir -p kotlin/lib
-cp "../target/$TARGET_PROFILE_DIR/$LIBNAME" "kotlin/lib/$LIBNAME"
+cp "$NATIVE_LIB" "kotlin/lib/$LIBNAME"
 
 echo "All done!"

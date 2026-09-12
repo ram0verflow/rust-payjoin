@@ -36,3 +36,7 @@ jobs:
         uses: ./.github/actions/setup-nix
       - name: "Build and test"
         run: nix develop .#kotlin -c bash ./payjoin-ffi/kotlin/contrib/test.sh
+      - name: "Compile production bindings"
+        run: |
+          nix develop .#kotlin -c env PAYJOIN_FFI_FEATURES= bash ./payjoin-ffi/kotlin/scripts/generate_bindings.sh
+          nix develop .#kotlin -c bash -c 'cd payjoin-ffi/kotlin && ./gradlew --no-daemon compileKotlin'

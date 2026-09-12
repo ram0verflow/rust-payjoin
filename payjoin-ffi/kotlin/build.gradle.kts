@@ -32,9 +32,13 @@ kotlin {
 tasks.test {
     useJUnitPlatform()
     val libDir = layout.projectDirectory.dir("lib").asFile
-    val native = listOf("libpayjoin_ffi.so", "libpayjoin_ffi.dylib", "payjoin_ffi.dll")
-        .map { libDir.resolve(it) }
-        .firstOrNull { it.exists() }
+    val os = System.getProperty("os.name").lowercase()
+    val nativeName = when {
+        os.contains("mac") || os.contains("darwin") -> "libpayjoin_ffi.dylib"
+        os.contains("win") -> "payjoin_ffi.dll"
+        else -> "libpayjoin_ffi.so"
+    }
+    val native = libDir.resolve(nativeName).takeIf { it.exists() }
     if (native != null) {
         inputs.file(native)
         systemProperty("uniffi.component.payjoin.libraryOverride", native.absolutePath)

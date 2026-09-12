@@ -1,17 +1,21 @@
 package org.payjoindevkit
 
 import kotlin.test.Test
-import kotlin.test.assertContains
+import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNotNull
 
 class UriTests {
     @Test
     fun urlEncodedPayjoinParameter() {
-        val uri = "bitcoin:12c6DSiU4Rq3P4ZxziKxzrL5LmMBrzjrJX?amount=1&pj=https://example.com?ciao"
+        val endpoint = "https://example.com/pj?ciao=1"
+        val encodedPj = "https%3A%2F%2Fexample.com%2Fpj%3Fciao%3D1"
+        val uri = "bitcoin:12c6DSiU4Rq3P4ZxziKxzrL5LmMBrzjrJX?amount=1&pj=$encodedPj"
         Uri.parse(uri).use { parsed ->
+            assertEquals("12c6DSiU4Rq3P4ZxziKxzrL5LmMBrzjrJX", parsed.address())
+            assertEquals(100_000_000uL, parsed.amountSats())
             parsed.checkPjSupported().use { pjUri ->
-                assertContains(pjUri.pjEndpoint(), "example.com")
+                assertEquals(endpoint, pjUri.pjEndpoint())
             }
         }
     }

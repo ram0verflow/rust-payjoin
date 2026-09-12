@@ -1,6 +1,7 @@
 package org.payjoindevkit
 
 import kotlin.test.Test
+import kotlin.test.assertFalse
 import kotlin.test.assertIs
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
@@ -19,6 +20,7 @@ class CancelTests {
         val fallbackTx = initialized.cancel().save(persister)
         assertNull(fallbackTx)
         assertIs<ReceiveSession.Closed>(replayReceiverEventLog(persister).state())
+        assertTrue(persister.closed)
     }
 
     @Test
@@ -33,6 +35,7 @@ class CancelTests {
         val fallbackTx = initialized.cancel().saveAsync(persister)
         assertNull(fallbackTx)
         assertIs<ReceiveSession.Closed>(replayReceiverEventLogAsync(persister).state())
+        assertTrue(persister.closed)
     }
 
     @Test
@@ -50,8 +53,10 @@ class CancelTests {
         val pendingFallback = withReplyKey.cancel().save(persister)
         assertTrue(pendingFallback.fallbackTx().isNotEmpty())
         assertIs<SendSession.SenderPendingFallback>(replaySenderEventLog(persister).state())
+        assertFalse(persister.closed)
         pendingFallback.closeSession().save(persister)
         assertIs<SendSession.Closed>(replaySenderEventLog(persister).state())
+        assertTrue(persister.closed)
     }
 
     @Test
@@ -69,7 +74,9 @@ class CancelTests {
         val pendingFallback = withReplyKey.cancel().saveAsync(persister)
         assertTrue(pendingFallback.fallbackTx().isNotEmpty())
         assertIs<SendSession.SenderPendingFallback>(replaySenderEventLogAsync(persister).state())
+        assertFalse(persister.closed)
         pendingFallback.closeSession().saveAsync(persister)
         assertIs<SendSession.Closed>(replaySenderEventLogAsync(persister).state())
+        assertTrue(persister.closed)
     }
 }
